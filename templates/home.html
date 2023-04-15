@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<header
+  class="sticky top-0 px-4 bg-secondary/30 rounded-b-xl bgblur flex flex-row items-center justify-between h-[5rem]">
+  <h1 class="text-primary text-2xl md:text-3xl font-extrabold">sekáč 🪓</h1>
+  <a class="p-2 border-primary rounded-lg border-4 cursor-pointer hover:bg-primary/5" href="/cart">
+    <i class="text-sm">🛒</i>
+    <span class="text-md font-extrabold text-primary ml-1">košíček ({{ items_in_cart }})</span>
+  </a>
+</header>
+
+<main class="grid grid-cols-auto-fit gap-4 px-4 py-6 overflow-y-scroll">
+  {% for item in items %}
+  <article class="text-primary border-primary rounded-lg border-4 hover:bg-secondary/10 hover:cursor-pointer">
+    <a class="block p-4 space-y-4 h-full flex flex-col" href="/product/{{ item.id }}" x-on:click="count++">
+      {% for image in item.images %}
+      <img src="/uploads/{{ image }}" class="max-h-[20rem] w-full object-cover rounded-lg">
+      {% endfor %}
+      <div class="flex flex-col flex-1">
+        <h3 class="text-xl font-extrabold flex-1">{{ item.name }}</h3>
+        <h6 class="text-lg font-semibold font-mono tracking-tight">{{ item.price }} {{ random_currency() }}</h6>
+        <p class="text-base leading-4 mt-1">{{ item.short_description }}</p>
+      </div>
+    </a>
+  </article>
+  {% else %}
+  <h2 class="text-primary text-2xl font-extrabold">bohužel tu zatim nic neni):</h2>
+  {% endfor %}
+</main>
+{% endblock %}

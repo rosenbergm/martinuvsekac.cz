@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block content %}
+
+<script>
+  function removeFromCart(id) {
+    fetch('/remove/' + id, {
+      method: 'POST',
+    }).then(res => {
+      if (res.status === 200) {
+        console.log('removed from cart')
+        window.location = '/cart'
+      } else {
+        console.log('failed to remove from cart')
+      }
+    })
+  }
+
+  function data() {
+    return {
+      paymentMethod: null,
+      email: null,
+      checkout() {
+        if (!this.paymentMethod || !this.email) {
+          return
+        }
+
+        fetch('/checkout', {
+          method: 'POST',
+          body: JSON.stringify({
+            paymentMethod: this.paymentMethod,
+            email: this.email,
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(res => {
+          if (res.status === 200) {
+            console.log('checkout successful')
+            window.location = '/'
+          } else {
+            console.log('checkout failed')
+          }
+        })
+      }
+    }
+  }
+</script>
+
+<header
+  class="sticky top-0 px-4 bg-secondary/30 rounded-b-xl bgblur flex flex-row items-center justify-between h-[5rem]">
+  <h1 class="text-primary text-2xl md:text-3xl font-extrabold">sekáč 🪓</h1>
+  <span>
+    <i class="text-sm">🛒</i>
+    <span class="text-md font-extrabold text-primary ml-1">košíček</span>
+  </span>
+</header>
+
+<main class="px-4 py-6 max-w-4xl mx-auto space-y-8" x-data="data()">
+  <a href="/" class="text-md font-semibold text-primary underline hover:no-underline">← nelíbi se mi tu, chci na hlavní
+    stránku</a>
+
+  {% if items %}
+  <section class="space-y-4">
+    <h2 class="text-xl font-extrabold text-primary">1. zkontroluj, jestli máš všechno</h2>
+    <section class="grid grid-cols-auto-fit gap-4 overflow-y-scroll">
+      {% for item in items %}
+      <article
+        class="group relative text-primary border-primary rounded-lg border-4 hover:bg-secondary/10 hover:cursor-pointer">
+        <a class="block p-4 space-y-4" x-on:click="count++">
+          {% for image in item.images %}
+          <img src="/uploads/{{ image }}" class="max-h-[20rem] w-full object-cover rounded-lg">
+          {% endfor %}
+          <div>
+            <h3 class="text-xl font-extrabold">{{ item.name }}</h3>
+            <h6 class="text-lg font-semibold font-mono tracking-tight">{{ item.price }} {{ random_currency() }}</h6>
+            <p class="text-base leading-4 mt-1">{{ item.description }}</p>
+          </div>
+        </a>
+
+        <button onmousedown="removeFromCart('{{ item.id }}')"
+          class="md:hidden group-hover:block absolute top-4 right-4 text-primary border-primary border-4 rounded-lg px-2 py-1 text-md font-extrabold hover:bg-primary/20">
+          dej to pryč
+        </button>
+      </article>
+      {% endfor %}
+    </section>
+  </section>
+
+  <section class="space-y-4">
+    <h2 class="text-xl font-extrabold text-primary">2. checkni, jestli to tvůj účet snese</h2>
+
+    <section>
+      <article class="flex flex-col sm:flex-row justify-between sm:items-center">
+        <h3 class="text-base font-extrabold text-primary">celkem tu máme…</h3>
+        <p class="text-lg font-semibold font-mono tracking-tight text-primary">…{{ pluralize(items
+          | length, "věc", "věcí") }}</p>
+      </article>
+      <article class="flex flex-col sm:flex-row justify-between sm:items-center">
+        <h3 class="text-base font-extrabold text-primary">a bude to koštovat…</h3>
+        <p class="text-lg font-semibold font-mono tracking-tight text-primary">…{{ items | sum(attribute="price") }}
+          {{ random_currency() }}</p>
+      </article>
+    </section>
+  </section>
+
+  <section class="space-y-4">
+    <h2 class="text-xl font-extrabold text-primary">3. jak to zaplatíme?</h2>
+
+    <section class="space-y-2">
+      <button x-on:click="paymentMethod = 'qr'"
+        class="text-primary border-primary border-4 rounded-lg px-2 py-1 text-md font-extrabold hover:bg-primary/20"
+        :class="paymentMethod === 'qr' ? 'bg-primary/20' : 'bg-transparent'">
+        qr platba
+      </button>
+
+      <p class="text-sm text-primary/70">moc promiň, na platbách kartou se teprve pracuje</p>
+    </section>
+  </section>
+
+  <section class="space-y-4">
+    <h2 class="text-xl font-extrabold text-primary">4. taky trochu něco o tobě</h2>
+
+    <input placeholder="tvůj e-mail" x-model="email" type="email"
+      class="text-primary placeholder:text-primary/60 border-primary focus:border-primary/80 border-4 rounded-lg px-2 py-1 text-md font-extrabold hover:bg-primary/5">
+  </section>
+
+  <section class="space-y-4">
+    <h2 class="text-xl font-extrabold text-primary">5. odešli to!</h2>
+
+    <button
+      class="text-primary border-primary border-4 rounded-lg px-2 py-1 text-md font-extrabold hover:bg-primary/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-transparent"
+      x-bind:disabled="!paymentMethod || !email" x-on:click="checkout()">
+      chci to!!!
+    </button>
+  </section>
+  {% else %}
+  <h2 class="text-primary text-2xl font-extrabold">tvůj košíček je zatím prázdný. <a href="/"
+      class="text-md font-extrabold text-primary underline hover:no-underline">šup nakupovat!</a></h2>
+  {% endif %}
+
+</main>
+
+{% endblock %}

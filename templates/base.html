@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👕</text></svg>">
+
+  <title>Martinův sekáč</title>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Chivo+Mono:wght@400;600&display=swap"
+    rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#070cb6",
+            secondary: '#ffc830',
+            light: '#ffe292'
+          },
+          gridTemplateColumns: {
+            'auto-fit': 'repeat(auto-fill, minmax(250px, 1fr))',
+          },
+          fontFamily: {
+            sans: [
+              'Archivo',
+              'ui-sans-serif',
+              'system-ui',
+              '-apple-system',
+              'BlinkMacSystemFont',
+              '"Segoe UI"',
+              'Roboto',
+              '"Helvetica Neue"',
+              'Arial',
+              '"Noto Sans"',
+              'sans-serif',
+              '"Apple Color Emoji"',
+              '"Segoe UI Emoji"',
+              '"Segoe UI Symbol"',
+              '"Noto Color Emoji"',
+            ],
+            mono: [
+              '"Chivo Mono"',
+              'ui-monospace',
+              'SFMono-Regular',
+              'Menlo',
+              'Monaco',
+              'Consolas',
+              '"Liberation Mono"',
+              '"Courier New"',
+              'monospace',
+            ],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .bgblur {
+      backdrop-filter: blur(32px);
+    }
+  </style>
+</head>
+
+<body class="bg-secondary/5" x-data="{ count: 0 }">
+  {% block content %}{% endblock %}
+</body>
+
+</html>
